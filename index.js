@@ -1,4 +1,5 @@
 const express = require("express");
+const morgan = require("morgan");
 const app = express();
 const PORT = 3001;
 
@@ -25,7 +26,23 @@ let persons = [
   },
 ];
 
+// Middleware to parse JSON bodies
 app.use(express.json());
+
+// Morgan middleware for logging
+app.use(morgan("tiny"));
+
+// Custom request logger middleware
+const requestLogger = (request, response, next) => {
+  console.log("Method:", request.method);
+  console.log("Path:  ", request.path);
+  console.log("Body:  ", request.body);
+  console.log("---");
+  next();
+};
+app.use(requestLogger);
+
+// Routes
 app.get("/api/persons", (req, res) => {
   res.json(persons);
 });
@@ -73,10 +90,12 @@ app.delete("/api/persons/:id", (req, res) => {
   persons = persons.filter((person) => person.id !== id);
   return res.status(204).end();
 });
+
 const generateId = () => {
   const maxId = persons.length > 0 ? Math.max(...persons.map((n) => n.id)) : 0;
   return maxId + 1;
 };
+
 app.post("/api/persons", (req, res) => {
   const body = req.body;
 
@@ -102,6 +121,15 @@ app.post("/api/persons", (req, res) => {
   persons = persons.concat(person);
   return res.json(person);
 });
+
+// Middleware for handling unknown endpoints
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+
+app.use(unknownEndpoint);
+
+// Start the server
 app.listen(PORT, () => {
   console.log(`Listening on port: ${PORT}`);
 });
