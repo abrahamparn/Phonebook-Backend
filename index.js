@@ -25,6 +25,7 @@ let persons = [
   },
 ];
 
+app.use(express.json());
 app.get("/api/persons", (req, res) => {
   res.json(persons);
 });
@@ -71,6 +72,28 @@ app.delete("/api/persons/:id", (req, res) => {
 
   persons = persons.filter((person) => person.id !== id);
   return res.status(204).end();
+});
+const generateId = () => {
+  const maxId = persons.length > 0 ? Math.max(...persons.map((n) => n.id)) : 0;
+  return maxId + 1;
+};
+app.post("/api/persons", (req, res) => {
+  const body = req.body;
+
+  if (!body.name || !body.number) {
+    return res.status(400).json({
+      error: "Missing name or number",
+    });
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateId(),
+  };
+
+  persons = persons.concat(person);
+  return res.json(person);
 });
 app.listen(PORT, () => {
   console.log(`Listening on port: ${PORT}`);
