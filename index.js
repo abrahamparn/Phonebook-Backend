@@ -53,6 +53,25 @@ app.get("/api/persons/:id", (req, res) => {
   }
   return res.json(thePerson);
 });
+
+app.delete("/api/persons/:id", (req, res) => {
+  const id = Number(req.params.id);
+  if (isNaN(id)) {
+    return res.status(400).json({
+      reason: "id must be a number",
+    });
+  }
+
+  const thePerson = persons.find((person) => person.id === id);
+  if (!thePerson) {
+    return res.status(404).json({
+      reason: "person not found",
+    });
+  }
+
+  persons = persons.filter((person) => person.id !== id);
+  return res.status(204).end();
+});
 app.listen(PORT, () => {
   console.log(`Listening on port: ${PORT}`);
 });
