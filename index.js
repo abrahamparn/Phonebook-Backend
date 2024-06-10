@@ -29,8 +29,13 @@ let persons = [
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-// Morgan middleware for logging
-app.use(morgan("tiny"));
+// Custom token to log the body of POST requests
+morgan.token("body", (req) => JSON.stringify(req.body));
+
+// Use morgan with the custom token
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :body")
+);
 
 // Custom request logger middleware
 const requestLogger = (request, response, next) => {
