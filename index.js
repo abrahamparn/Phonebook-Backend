@@ -39,16 +39,19 @@ app.get("/info", (req, res) => {
 });
 
 app.get("/api/persons/:id", (req, res) => {
-  const id = req.params.id;
-  if (!Number(id)) {
+  const id = Number(req.params.id);
+  if (isNaN(id)) {
     return res.status(400).json({
-      reason: "id must number",
+      reason: "id must be a number",
     });
   }
-  const thePerson = persons.filter((person) => person.id === id);
+  const thePerson = persons.find((person) => person.id === id);
   if (!thePerson) {
-    return res.status(400);
+    return res.status(404).json({
+      reason: "person not found",
+    });
   }
+  return res.json(thePerson);
 });
 app.listen(PORT, () => {
   console.log(`Listening on port: ${PORT}`);
