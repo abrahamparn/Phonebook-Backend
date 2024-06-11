@@ -1,31 +1,28 @@
 const express = require("express");
 const morgan = require("morgan");
 const app = express();
+const cors = require("cors");
 const PORT = 3001;
 
 let persons = [
   {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456",
+    id: "1",
+    name: "Testing Keren",
+    number: "123123123",
   },
   {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
+    id: "3",
+    name: "Abraham",
+    number: "12312323",
   },
   {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
+    id: "6",
+    name: "asdfasdf",
+    number: "12312321323232",
   },
 ];
 
+app.use(cors());
 // Middleware to parse JSON bodies
 app.use(express.json());
 
@@ -68,7 +65,7 @@ app.get("/api/persons/:id", (req, res) => {
       reason: "id must be a number",
     });
   }
-  const thePerson = persons.find((person) => person.id === id);
+  const thePerson = persons.find((person) => Number(person.id) === id);
   if (!thePerson) {
     return res.status(404).json({
       reason: "person not found",
@@ -85,20 +82,21 @@ app.delete("/api/persons/:id", (req, res) => {
     });
   }
 
-  const thePerson = persons.find((person) => person.id === id);
+  const thePerson = persons.find((person) => Number(person.id) === id);
   if (!thePerson) {
     return res.status(404).json({
       reason: "person not found",
     });
   }
 
-  persons = persons.filter((person) => person.id !== id);
+  persons = persons.filter((person) => Number(person.id) !== id);
   return res.status(204).end();
 });
 
 const generateId = () => {
-  const maxId = persons.length > 0 ? Math.max(...persons.map((n) => n.id)) : 0;
-  return maxId + 1;
+  const maxId =
+    persons.length > 0 ? Math.max(...persons.map((n) => Number(n.id))) : 0;
+  return (maxId + 1).toString();
 };
 
 app.post("/api/persons", (req, res) => {
