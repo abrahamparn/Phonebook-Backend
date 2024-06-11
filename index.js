@@ -34,6 +34,7 @@ app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
 
+app.use(express.static("dist"));
 // Custom request logger middleware
 const requestLogger = (request, response, next) => {
   console.log("Method:", request.method);
