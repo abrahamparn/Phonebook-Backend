@@ -113,21 +113,30 @@ app.post("/api/persons", (req, res) => {
     });
   }
 
-  const nameExists = persons.some((person) => person.name === body.name);
-  if (nameExists) {
-    return res.status(400).json({
-      error: "Name must be unique",
-    });
-  }
+  // const nameExists = persons.some((person) => person.name === body.name);
+  // if (nameExists) {
+  //   return res.status(400).json({
+  //     error: "Name must be unique",
+  //   });
+  // }
 
-  const person = {
+  // const person = {
+  //   name: body.name,
+  //   number: body.number,
+  //   id: generateId(),
+  // };
+
+  // persons = persons.concat(person);
+  // return res.json(person);
+
+  const phone = new Phone({
     name: body.name,
     number: body.number,
-    id: generateId(),
-  };
+  });
 
-  persons = persons.concat(person);
-  return res.json(person);
+  phone.save().then((savedPhone) => {
+    res.json(savedPhone);
+  });
 });
 
 // Middleware for handling unknown endpoints
