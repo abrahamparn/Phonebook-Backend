@@ -4,7 +4,7 @@ GET http://localhost:3001/api/persons
 GET http://localhost:3001/info
 
 ###
-GET http://localhost:3001/api/persons/6672313d88c0accd4b9589a2
+GET http://localhost:3001/api/persons/6672315794897370d4dade31
 
 ###
 DELETE http://localhost:3001/api/persons/667236915445e5ae99eb8e07
@@ -14,8 +14,8 @@ POST http://localhost:3001/api/persons/
 Content-Type: application/json
 
 {
-    "name":"Percobaan Tinggi",
-    "number": "001001001"
+    "name":"Abraham P. Naiborhu",
+    "number": "AWIKWOK"
 }
 
 ###
