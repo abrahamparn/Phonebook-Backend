@@ -79,30 +79,25 @@ app.get("/api/persons/:id", (req, res) => {
   return res.json(thePerson);
 });
 
-app.delete("/api/persons/:id", (req, res) => {
-  const id = Number(req.params.id);
-  if (isNaN(id)) {
-    return res.status(400).json({
-      reason: "id must be a number",
-    });
-  }
+app.delete("/api/persons/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
 
-  const thePerson = persons.find((person) => Number(person.id) === id);
-  if (!thePerson) {
-    return res.status(404).json({
-      reason: "person not found",
-    });
-  }
+    let thePhone = await Phone.findById(id);
 
-  persons = persons.filter((person) => Number(person.id) !== id);
-  return res.status(204).end();
+    if (!thePhone) {
+      return res.status(404).json({
+        reason: "person not found",
+      });
+    }
+
+    await Phone.findByIdAndDelete(id);
+
+    return res.status(204).end();
+  } catch (err) {
+    console.log(err.message);
+  }
 });
-
-const generateId = () => {
-  const maxId =
-    persons.length > 0 ? Math.max(...persons.map((n) => Number(n.id))) : 0;
-  return (maxId + 1).toString();
-};
 
 app.post("/api/persons", (req, res) => {
   const body = req.body;
@@ -112,22 +107,6 @@ app.post("/api/persons", (req, res) => {
       error: "Missing name or number",
     });
   }
-
-  // const nameExists = persons.some((person) => person.name === body.name);
-  // if (nameExists) {
-  //   return res.status(400).json({
-  //     error: "Name must be unique",
-  //   });
-  // }
-
-  // const person = {
-  //   name: body.name,
-  //   number: body.number,
-  //   id: generateId(),
-  // };
-
-  // persons = persons.concat(person);
-  // return res.json(person);
 
   const phone = new Phone({
     name: body.name,
