@@ -19,4 +19,13 @@ Content-Type: application/json
 }
 
 ###
+POST http://localhost:3001/api/persons/
+Content-Type: application/json
+
+{
+    "name":"Helena",
+    "number": "021-123123213"
+}
+
+###
 DELETE http://localhost:3001/api/persons/1
