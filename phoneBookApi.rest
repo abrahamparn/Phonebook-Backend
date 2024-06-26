@@ -4,10 +4,10 @@ GET http://localhost:3001/api/persons
 GET http://localhost:3001/info
 
 ###
-GET http://localhost:3001/api/persons/100
+GET http://localhost:3001/api/persons/667236915445e5ae99eb8e07
 
 ###
-DELETE http://localhost:3001/api/persons/1
+DELETE http://localhost:3001/api/persons/667236915445e5ae99eb8e07
 
 ###
 POST http://localhost:3001/api/persons/
@@ -17,3 +17,6 @@ Content-Type: application/json
     "name":"Percobaan Tinggi",
     "number": "001001001"
 }
+
+###
+DELETE http://localhost:3001/api/persons/1

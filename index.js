@@ -63,7 +63,7 @@ app.get("/info", (req, res) => {
     `);
 });
 
-app.get("/api/persons/:id", (req, res) => {
+app.get("/api/persons/:id", (req, res, next) => {
   const id = Number(req.params.id);
   if (isNaN(id)) {
     return res.status(400).json({
@@ -79,23 +79,21 @@ app.get("/api/persons/:id", (req, res) => {
   return res.json(thePerson);
 });
 
-app.delete("/api/persons/:id", async (req, res) => {
+app.delete("/api/persons/:id", async (req, res, next) => {
   try {
     const id = req.params.id;
 
     let thePhone = await Phone.findById(id);
 
     if (!thePhone) {
-      return res.status(404).json({
-        reason: "person not found",
-      });
+      throw new Error({ status: 404, message: "wrong id" });
     }
 
     await Phone.findByIdAndDelete(id);
 
     return res.status(204).end();
   } catch (err) {
-    console.log(err.message);
+    next(err);
   }
 });
 
@@ -124,6 +122,21 @@ const unknownEndpoint = (request, response) => {
 };
 
 app.use(unknownEndpoint);
+
+const errorHandler = (error, req, res, next) => {
+  console.error("errorHandler", error.message);
+
+  if (error.status === 404) {
+    return res.status(400).send(error.message);
+  }
+  if (error.name === "CastError") {
+    return res.status(400).send({ error: "malformatted id" });
+  }
+
+  next(error);
+};
+
+app.use(errorHandler);
 
 // Start the server
 app.listen(PORT, () => {
